@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Header from './Header';
 import AgregarCita from './AgregarCita';
 import ListaCitas from './ListaCitas';
+import PropTypes from 'prop-types';
+import Cita from './Cita';
 
 
 class App extends Component {
@@ -9,6 +11,30 @@ class App extends Component {
      state = {
       citas: []
   }
+
+
+  // Esta funcion espera que se monte el componente y luego se hace verdadera
+  //Luego utilizamos getItem para traer lo que esta almacenado en LocalStorage
+  //y como esta en formato string utilizamos JSON.parse que convierte los string en
+  //un objeto o array.
+componentDidMount() {
+  const citasLS = localStorage.getItem('citas');
+  if(citasLS){
+    this.setState({
+      citas: JSON.parse(citasLS)
+    })
+  }
+}
+
+//Almacenamos los datos en localStorage, pero solo pueden almacenarse datos en formato
+//string, por ello llamamos a la funcion JSON.stringify. (Transforma el obj en string)
+componentDidUpdate() {
+  localStorage.setItem(
+    'citas',
+    JSON.stringify(this.state.citas)
+  )
+}
+
 
   crearCita = (nuevaCita) => {
     /*
@@ -66,4 +92,16 @@ class App extends Component {
   }
 }
 
+
+Cita.propTypes = {
+  info: PropTypes.shape({
+    fecha: PropTypes.string.isRequired,
+    hora: PropTypes.string.isRequired,
+    mascota: PropTypes.string.isRequired,
+    propietario: PropTypes.string.isRequired,
+    sintomas: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired
+  }),
+  borrarCita: PropTypes.func.isRequired
+}
 export default App;
